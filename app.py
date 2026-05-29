@@ -1,4 +1,3 @@
-```python id="2d5j1n"
 from flask import Flask, render_template, request, redirect, session
 import sqlite3
 
@@ -272,4 +271,3 @@ if __name__ == '__main__':
         port=5000,
         debug=True
     )
-```
