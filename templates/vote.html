@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-
 <title>Cast Your Vote</title>
 
 <style>
-
 *{
     margin:0;
     padding:0;
@@ -13,317 +11,100 @@
 }
 
 body{
-
     font-family:'Segoe UI',sans-serif;
-
-    background:
-    linear-gradient(
-        135deg,
-        #0f172a,
-        #1e293b,
-        #2563eb
-    );
-
+    background:linear-gradient(135deg,#0f172a,#1e293b,#2563eb);
     min-height:100vh;
-
     display:flex;
     justify-content:center;
     align-items:center;
-
     padding:20px;
 }
-
-/* MAIN CARD */
 
 .card{
-
     width:90%;
     max-width:550px;
-
-    background:
-    rgba(255,255,255,0.12);
-
+    background:rgba(255,255,255,0.12);
     backdrop-filter:blur(15px);
-
     border-radius:30px;
-
     padding:40px;
-
-    box-shadow:
-    0 10px 40px rgba(0,0,0,0.4);
-
     color:white;
-
-    animation:fadeIn 1s ease;
 }
 
-/* TITLE */
+h2{text-align:center;font-size:34px;margin-bottom:8px;}
+.subtitle{text-align:center;color:#dbeafe;margin-bottom:25px;font-size:15px;}
 
-h2{
-
+.finger-status{
     text-align:center;
-
-    font-size:34px;
-
-    margin-bottom:8px;
+    margin-bottom:20px;
+    padding:10px;
+    border-radius:10px;
+    background:rgba(255,255,255,0.1);
 }
-
-/* SUBTITLE */
-
-.subtitle{
-
-    text-align:center;
-
-    color:#dbeafe;
-
-    margin-bottom:35px;
-
-    font-size:15px;
-}
-
-/* CANDIDATE CARD */
 
 .candidate{
-
-    background:
-    rgba(255,255,255,0.08);
-
-    border:2px solid transparent;
-
+    background:rgba(255,255,255,0.08);
     border-radius:20px;
-
     padding:20px;
-
-    margin-bottom:18px;
-
+    margin-bottom:15px;
     display:flex;
-
     align-items:center;
-
     gap:15px;
-
     cursor:pointer;
-
-    transition:0.3s;
 }
-
-.candidate:hover{
-
-    transform:translateY(-4px);
-
-    background:
-    rgba(255,255,255,0.15);
-
-    border-color:#60a5fa;
-}
-
-/* SELECTED */
 
 .candidate.selected{
-
-    border-color:#60a5fa;
-
-    background:
-    rgba(96,165,250,0.18);
+    border:2px solid #60a5fa;
+    background:rgba(96,165,250,0.18);
 }
 
-/* HIDE RADIO */
-
-.candidate input[type="radio"]{
-
-    display:none;
-}
-
-/* AVATAR */
+.candidate input{display:none;}
 
 .avatar{
-
     width:60px;
-
     height:60px;
-
     border-radius:50%;
-
-    background:
-    linear-gradient(
-        135deg,
-        #3b82f6,
-        #60a5fa
-    );
-
+    background:linear-gradient(135deg,#3b82f6,#60a5fa);
     display:flex;
-
     justify-content:center;
-
     align-items:center;
-
     font-size:28px;
-
-    flex-shrink:0;
 }
-
-/* NAME */
-
-.name{
-
-    font-size:20px;
-
-    font-weight:bold;
-}
-
-/* POSITION */
-
-.position{
-
-    color:#dbeafe;
-
-    font-size:14px;
-
-    margin-top:3px;
-}
-
-/* SUBMIT BUTTON */
 
 .btn{
-
     width:100%;
-
     padding:16px;
-
-    margin-top:25px;
-
+    margin-top:20px;
     border:none;
-
     border-radius:18px;
-
-    background:
-    linear-gradient(
-        135deg,
-        #22c55e,
-        #4ade80
-    );
-
+    background:linear-gradient(135deg,#22c55e,#4ade80);
     color:white;
-
     font-size:18px;
-
-    font-weight:bold;
-
     cursor:pointer;
-
-    transition:0.3s;
 }
-
-.btn:hover{
-
-    transform:scale(1.03);
-
-    box-shadow:
-    0 10px 25px rgba(34,197,94,0.5);
-}
-
-/* FINGERPRINT BUTTON */
 
 .finger-btn{
-
     width:100%;
-
     padding:16px;
-
     border:none;
-
     border-radius:18px;
-
-    background:
-    linear-gradient(
-        135deg,
-        #7c3aed,
-        #8b5cf6
-    );
-
+    background:linear-gradient(135deg,#7c3aed,#8b5cf6);
     color:white;
-
     font-size:18px;
-
-    font-weight:bold;
-
     cursor:pointer;
-
-    margin-bottom:20px;
-
-    transition:0.3s;
-}
-
-.finger-btn:hover{
-
-    transform:scale(1.03);
-
-    box-shadow:
-    0 10px 25px rgba(124,58,237,0.5);
-}
-
-/* ANIMATION */
-
-@keyframes fadeIn{
-
-    from{
-        opacity:0;
-        transform:translateY(20px);
-    }
-
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
+    margin-bottom:15px;
 }
 
 </style>
 
 <script>
 
-/* SELECT CANDIDATE */
-
+// SELECT CANDIDATE
 function selectCandidate(el){
-
-    document
-    .querySelectorAll('.candidate')
-    .forEach(c =>
-    c.classList.remove('selected'));
+    document.querySelectorAll('.candidate')
+    .forEach(c => c.classList.remove('selected'));
 
     el.classList.add('selected');
-
     el.querySelector('input').checked = true;
-}
-
-
-/* SIMPLE FINGERPRINT VERIFICATION */
-
-function verifyFingerprint() {
-
-    alert("Fingerprint Verified Successfully ✅");
-
-    localStorage.setItem("finger_verified", "true");
-
-    document.getElementById("candidateSection").style.display = "block";
-
-    document.querySelector(".finger-btn").style.display = "none";
-}
-
-
-/* CHECK BEFORE SUBMIT */
-
-function checkFingerprint() {
-
-    let verified = localStorage.getItem("finger_verified");
-
-    if (verified !== "true") {
-
-        alert("Please verify fingerprint first");
-
-        return false;
-    }
-
-    return true;
 }
 
 </script>
@@ -334,67 +115,50 @@ function checkFingerprint() {
 
 <div class="card">
 
-<h2>
-🗳️ Cast Your Vote
-</h2>
+<h2>🗳️ Cast Your Vote</h2>
+<p class="subtitle">Select your preferred candidate</p>
 
-<p class="subtitle">
-Select your preferred candidate
-</p>
+<!-- FINGERPRINT STATUS FROM BACKEND -->
+<div class="finger-status">
+{% if fingerprint_verified %}
+    ✅ Fingerprint Verified
+{% else %}
+    ❌ Fingerprint NOT Verified
+{% endif %}
+</div>
 
-<form method="POST" onsubmit="return checkFingerprint()">
+<!-- VERIFY BUTTON -->
+{% if not fingerprint_verified %}
+<form method="POST">
+    <button class="finger-btn" type="submit" name="verify_fingerprint" value="1">
+        🔒 Verify Fingerprint
+    </button>
+</form>
+{% endif %}
 
-<!-- FINGERPRINT BUTTON -->
-
-<button
-type="button"
-class="finger-btn"
-onclick="verifyFingerprint()">
-
-🔒 Verify Fingerprint
-
-</button>
-
-<!-- HIDDEN CANDIDATE SECTION -->
-
-<div id="candidateSection" style="display:none;">
+<!-- VOTING FORM -->
+<form method="POST">
 
 {% for candidate in candidates %}
+<div class="candidate" onclick="selectCandidate(this)">
+    <input type="radio" name="candidate" value="{{ candidate[0] }}" required>
 
-<div class="candidate"
-onclick="selectCandidate(this)">
+    <div class="avatar">👤</div>
 
-<input
-type="radio"
-name="candidate"
-value="{{ candidate[0] }}"
-required>
-
-<div class="avatar">
-👤
+    <div>
+        <div style="font-size:18px;font-weight:bold;">
+            {{ candidate[1] }}
+        </div>
+        <div style="font-size:13px;color:#dbeafe;">
+            Election Candidate
+        </div>
+    </div>
 </div>
-
-<div>
-
-<div class="name">
-{{ candidate[1] }}
-</div>
-
-<div class="position">
-Election Candidate
-</div>
-
-</div>
-
-</div>
-
 {% endfor %}
 
-<button type="submit" class="btn">
-✅ Submit Vote
+<button class="btn" type="submit">
+    ✅ Submit Vote
 </button>
-
-</div>
 
 </form>
 
