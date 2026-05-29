@@ -79,14 +79,14 @@ def login():
 
         conn.close()
 
-        # reset fingerprint for new session
+        # RESET fingerprint
         session['fingerprint_verified'] = False
 
         return redirect(f'/vote/{phone}')
 
     return render_template('login.html')
 
-# ---------------- VOTE (WITH FINGERPRINT) ---------------- #
+# ---------------- VOTE (FIXED FINGERPRINT) ---------------- #
 
 @app.route('/vote/<phone>', methods=['GET', 'POST'])
 def vote(phone):
@@ -94,17 +94,18 @@ def vote(phone):
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
 
-    # INIT fingerprint session
+    # INIT SESSION
     if 'fingerprint_verified' not in session:
         session['fingerprint_verified'] = False
 
-    # VERIFY fingerprint
-    if request.method == 'POST' and request.form.get('verify_fingerprint'):
+    # STEP 1: VERIFY FINGERPRINT
+    if request.method == 'POST' and 'verify_fingerprint' in request.form:
         session['fingerprint_verified'] = True
+        conn.close()
         return redirect(f'/vote/{phone}')
 
-    # SUBMIT VOTE
-    if request.method == 'POST' and request.form.get('candidate'):
+    # STEP 2: SUBMIT VOTE
+    if request.method == 'POST' and 'candidate' in request.form:
 
         if not session.get('fingerprint_verified'):
             conn.close()
@@ -125,11 +126,12 @@ def vote(phone):
         conn.commit()
         conn.close()
 
-        # reset after vote
+        # RESET AFTER VOTE
         session['fingerprint_verified'] = False
 
         return render_template('success.html')
 
+    # STEP 3: LOAD CANDIDATES
     c.execute("SELECT * FROM candidates")
     candidates = c.fetchall()
     conn.close()
