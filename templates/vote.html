@@ -351,6 +351,10 @@ async function verifyFingerprint() {
 
         alert("Fingerprint Verified Successfully ✅");
 
+        document.getElementById("candidateSection").style.display = "block";
+
+        document.querySelector(".finger-btn").style.display = "none";
+
     }
 
     catch (err) {
@@ -407,6 +411,10 @@ onclick="verifyFingerprint()">
 
 </button>
 
+<!-- HIDDEN CANDIDATE SECTION -->
+
+<div id="candidateSection" style="display:none;">
+
 {% for candidate in candidates %}
 
 <div class="candidate"
@@ -441,6 +449,8 @@ Election Candidate
 <button type="submit" class="btn">
 ✅ Submit Vote
 </button>
+
+</div>
 
 </form>
 
