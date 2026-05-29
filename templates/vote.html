@@ -30,17 +30,29 @@ body{
     color:white;
 }
 
-h2{text-align:center;font-size:34px;margin-bottom:8px;}
-.subtitle{text-align:center;color:#dbeafe;margin-bottom:25px;font-size:15px;}
+h2{
+    text-align:center;
+    font-size:34px;
+    margin-bottom:8px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#dbeafe;
+    margin-bottom:25px;
+    font-size:15px;
+}
 
 .finger-status{
     text-align:center;
     margin-bottom:20px;
-    padding:10px;
+    padding:12px;
     border-radius:10px;
     background:rgba(255,255,255,0.1);
+    font-weight:bold;
 }
 
+/* CANDIDATE CARD */
 .candidate{
     background:rgba(255,255,255,0.08);
     border-radius:20px;
@@ -50,6 +62,11 @@ h2{text-align:center;font-size:34px;margin-bottom:8px;}
     align-items:center;
     gap:15px;
     cursor:pointer;
+    transition:0.3s;
+}
+
+.candidate:hover{
+    background:rgba(255,255,255,0.15);
 }
 
 .candidate.selected{
@@ -57,8 +74,11 @@ h2{text-align:center;font-size:34px;margin-bottom:8px;}
     background:rgba(96,165,250,0.18);
 }
 
-.candidate input{display:none;}
+.candidate input{
+    display:none;
+}
 
+/* AVATAR */
 .avatar{
     width:60px;
     height:60px;
@@ -70,6 +90,7 @@ h2{text-align:center;font-size:34px;margin-bottom:8px;}
     font-size:28px;
 }
 
+/* BUTTONS */
 .btn{
     width:100%;
     padding:16px;
@@ -80,6 +101,11 @@ h2{text-align:center;font-size:34px;margin-bottom:8px;}
     color:white;
     font-size:18px;
     cursor:pointer;
+}
+
+.btn:disabled{
+    opacity:0.5;
+    cursor:not-allowed;
 }
 
 .finger-btn{
@@ -118,7 +144,7 @@ function selectCandidate(el){
 <h2>🗳️ Cast Your Vote</h2>
 <p class="subtitle">Select your preferred candidate</p>
 
-<!-- FINGERPRINT STATUS FROM BACKEND -->
+<!-- FINGERPRINT STATUS -->
 <div class="finger-status">
 {% if fingerprint_verified %}
     ✅ Fingerprint Verified
@@ -130,7 +156,7 @@ function selectCandidate(el){
 <!-- VERIFY BUTTON -->
 {% if not fingerprint_verified %}
 <form method="POST">
-    <button class="finger-btn" type="submit" name="verify_fingerprint" value="1">
+    <button class="finger-btn" type="submit" name="verify_fingerprint">
         🔒 Verify Fingerprint
     </button>
 </form>
@@ -156,9 +182,15 @@ function selectCandidate(el){
 </div>
 {% endfor %}
 
+{% if fingerprint_verified %}
 <button class="btn" type="submit">
     ✅ Submit Vote
 </button>
+{% else %}
+<button class="btn" type="button" disabled>
+    🔒 Verify Fingerprint First
+</button>
+{% endif %}
 
 </form>
 
