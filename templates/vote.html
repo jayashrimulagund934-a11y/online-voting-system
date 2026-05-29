@@ -28,6 +28,7 @@ body{
     border-radius:30px;
     padding:40px;
     color:white;
+    box-shadow:0 10px 30px rgba(0,0,0,0.3);
 }
 
 h2{
@@ -46,10 +47,11 @@ h2{
 .finger-status{
     text-align:center;
     margin-bottom:20px;
-    padding:12px;
-    border-radius:10px;
+    padding:14px;
+    border-radius:12px;
     background:rgba(255,255,255,0.1);
     font-weight:bold;
+    font-size:16px;
 }
 
 .candidate{
@@ -66,6 +68,7 @@ h2{
 
 .candidate:hover{
     background:rgba(255,255,255,0.15);
+    transform:scale(1.02);
 }
 
 .candidate.selected{
@@ -98,6 +101,11 @@ h2{
     color:white;
     font-size:18px;
     cursor:pointer;
+    transition:0.3s;
+}
+
+.btn:hover{
+    transform:scale(1.02);
 }
 
 .btn:disabled{
@@ -115,6 +123,11 @@ h2{
     font-size:18px;
     cursor:pointer;
     margin-bottom:15px;
+    transition:0.3s;
+}
+
+.finger-btn:hover{
+    transform:scale(1.02);
 }
 </style>
 
@@ -124,31 +137,23 @@ let fingerprintVerified = false;
 
 // SELECT CANDIDATE
 function selectCandidate(el){
+
     document.querySelectorAll('.candidate')
     .forEach(c => c.classList.remove('selected'));
 
     el.classList.add('selected');
+
     el.querySelector('input').checked = true;
 }
 
-// REAL FINGERPRINT VERIFY
+// SIMPLE FINGERPRINT VERIFY
 async function verifyFingerprint() {
 
-    if (!window.PublicKeyCredential) {
-        alert("Fingerprint authentication not supported on this device");
-        return;
-    }
+    let result = confirm(
+        "Touch your fingerprint sensor to verify identity"
+    );
 
-    try {
-
-        await navigator.credentials.get({
-            publicKey: {
-                challenge: new Uint8Array(32),
-                timeout: 60000,
-                userVerification: "required",
-                allowCredentials: []
-            }
-        });
+    if(result){
 
         fingerprintVerified = true;
 
@@ -160,14 +165,12 @@ async function verifyFingerprint() {
         document.getElementById("voteBtn").innerHTML =
         "✅ Submit Vote";
 
-    } catch (error) {
+    } else {
 
         fingerprintVerified = false;
 
         document.getElementById("finger-status").innerHTML =
         "❌ Fingerprint NOT Verified";
-
-        alert("Fingerprint verification failed");
     }
 }
 
@@ -180,7 +183,10 @@ async function verifyFingerprint() {
 <div class="card">
 
 <h2>🗳️ Cast Your Vote</h2>
-<p class="subtitle">Select your preferred candidate</p>
+
+<p class="subtitle">
+Select your preferred candidate
+</p>
 
 <!-- FINGERPRINT STATUS -->
 <div class="finger-status" id="finger-status">
@@ -188,22 +194,31 @@ async function verifyFingerprint() {
 </div>
 
 <!-- VERIFY BUTTON -->
-<button class="finger-btn" type="button"
+<button class="finger-btn"
+type="button"
 onclick="verifyFingerprint()">
-    🔒 Verify Fingerprint
+
+🔒 Verify Fingerprint
+
 </button>
 
 <!-- VOTING FORM -->
 <form method="POST">
 
 {% for candidate in candidates %}
-<div class="candidate" onclick="selectCandidate(this)">
-    <input type="radio" name="candidate"
-    value="{{ candidate[0] }}" required>
+
+<div class="candidate"
+onclick="selectCandidate(this)">
+
+    <input type="radio"
+    name="candidate"
+    value="{{ candidate[0] }}"
+    required>
 
     <div class="avatar">👤</div>
 
     <div>
+
         <div style="font-size:18px;font-weight:bold;">
             {{ candidate[1] }}
         </div>
@@ -211,13 +226,20 @@ onclick="verifyFingerprint()">
         <div style="font-size:13px;color:#dbeafe;">
             Election Candidate
         </div>
+
     </div>
+
 </div>
+
 {% endfor %}
 
-<button class="btn" id="voteBtn"
-type="submit" disabled>
-    🔒 Verify Fingerprint First
+<button class="btn"
+id="voteBtn"
+type="submit"
+disabled>
+
+🔒 Verify Fingerprint First
+
 </button>
 
 </form>
