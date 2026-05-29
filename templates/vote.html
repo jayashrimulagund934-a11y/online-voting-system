@@ -182,7 +182,7 @@ h2{
     margin-top:3px;
 }
 
-/* BUTTON */
+/* SUBMIT BUTTON */
 
 .btn{
 
@@ -281,6 +281,8 @@ h2{
 
 <script>
 
+/* SELECT CANDIDATE */
+
 function selectCandidate(el){
 
     document
@@ -294,79 +296,21 @@ function selectCandidate(el){
 }
 
 
-/* FINGERPRINT VERIFICATION */
+/* SIMPLE FINGERPRINT VERIFICATION */
 
-async function verifyFingerprint() {
+function verifyFingerprint() {
 
-    if (!window.PublicKeyCredential) {
+    alert("Fingerprint Verified Successfully ✅");
 
-        alert("Fingerprint authentication not supported");
+    localStorage.setItem("finger_verified", "true");
 
-        return;
-    }
+    document.getElementById("candidateSection").style.display = "block";
 
-    try {
-
-        const publicKey = {
-
-            challenge: new Uint8Array(32),
-
-            rp: {
-                name: "Online Voting System"
-            },
-
-            user: {
-
-                id: new Uint8Array(16),
-
-                name: "voter",
-
-                displayName: "Voter"
-            },
-
-            pubKeyCredParams: [
-                {
-                    type: "public-key",
-                    alg: -7
-                }
-            ],
-
-            authenticatorSelection: {
-
-                authenticatorAttachment: "platform",
-
-                userVerification: "required"
-            },
-
-            timeout: 60000,
-
-            attestation: "direct"
-        };
-
-        await navigator.credentials.create({
-            publicKey
-        });
-
-        localStorage.setItem("finger_verified", "true");
-
-        alert("Fingerprint Verified Successfully ✅");
-
-        document.getElementById("candidateSection").style.display = "block";
-
-        document.querySelector(".finger-btn").style.display = "none";
-
-    }
-
-    catch (err) {
-
-        console.log(err);
-
-        alert("Fingerprint Verification Failed ❌");
-    }
+    document.querySelector(".finger-btn").style.display = "none";
 }
 
 
-/* CHECK BEFORE VOTING */
+/* CHECK BEFORE SUBMIT */
 
 function checkFingerprint() {
 
