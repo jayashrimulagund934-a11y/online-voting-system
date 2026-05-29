@@ -1,3 +1,4 @@
+```python id="2d5j1n"
 from flask import Flask, render_template, request, redirect, session
 import sqlite3
 
@@ -59,6 +60,7 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+
     if request.method == 'POST':
 
         phone = request.form['phone']
@@ -73,20 +75,18 @@ def login():
             if voter[2] == 1:
                 conn.close()
                 return "<h2 style='color:red;text-align:center;'>You already voted!</h2>"
+
         else:
             c.execute("INSERT INTO voters(phone) VALUES(?)", (phone,))
             conn.commit()
 
         conn.close()
 
-        # RESET fingerprint
-        session['fingerprint_verified'] = False
-
         return redirect(f'/vote/{phone}')
 
     return render_template('login.html')
 
-# ---------------- VOTE (FIXED FINGERPRINT) ---------------- #
+# ---------------- VOTE ---------------- #
 
 @app.route('/vote/<phone>', methods=['GET', 'POST'])
 def vote(phone):
@@ -94,22 +94,8 @@ def vote(phone):
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
 
-    # INIT SESSION
-    if 'fingerprint_verified' not in session:
-        session['fingerprint_verified'] = False
-
-    # STEP 1: VERIFY FINGERPRINT
-    if request.method == 'POST' and 'verify_fingerprint' in request.form:
-        session['fingerprint_verified'] = True
-        conn.close()
-        return redirect(f'/vote/{phone}')
-
-    # STEP 2: SUBMIT VOTE
+    # SUBMIT VOTE
     if request.method == 'POST' and 'candidate' in request.form:
-
-        if not session.get('fingerprint_verified'):
-            conn.close()
-            return "<h3 style='color:red;text-align:center;'>Fingerprint not verified!</h3>"
 
         candidate_id = request.form['candidate']
 
@@ -126,20 +112,17 @@ def vote(phone):
         conn.commit()
         conn.close()
 
-        # RESET AFTER VOTE
-        session['fingerprint_verified'] = False
-
         return render_template('success.html')
 
-    # STEP 3: LOAD CANDIDATES
+    # LOAD CANDIDATES
     c.execute("SELECT * FROM candidates")
     candidates = c.fetchall()
+
     conn.close()
 
     return render_template(
         'vote.html',
-        candidates=candidates,
-        fingerprint_verified=session.get('fingerprint_verified', False)
+        candidates=candidates
     )
 
 # ---------------- ADMIN LOGIN ---------------- #
@@ -160,10 +143,20 @@ def admin_login():
 
     return '''
     <h2 style="text-align:center;">Admin Login</h2>
+
     <form method="POST" style="text-align:center;">
-        <input name="username" placeholder="Username"><br><br>
-        <input type="password" name="password" placeholder="Password"><br><br>
-        <button type="submit">Login</button>
+
+        <input name="username"
+        placeholder="Username"><br><br>
+
+        <input type="password"
+        name="password"
+        placeholder="Password"><br><br>
+
+        <button type="submit">
+            Login
+        </button>
+
     </form>
     '''
 
@@ -183,7 +176,10 @@ def admin():
 
     conn.close()
 
-    return render_template('admin.html', candidates=candidates)
+    return render_template(
+        'admin.html',
+        candidates=candidates
+    )
 
 # ---------------- EDIT ---------------- #
 
@@ -202,15 +198,26 @@ def admin_edit():
         ids = c.fetchall()
 
         for cid in ids:
+
             new_name = request.form.get(f'name_{cid[0]}')
+
             if new_name:
-                c.execute("UPDATE candidates SET name=? WHERE id=?", (new_name, cid[0]))
+                c.execute(
+                    "UPDATE candidates SET name=? WHERE id=?",
+                    (new_name, cid[0])
+                )
 
         for key in request.form:
+
             if key.startswith("new_candidate_"):
+
                 name = request.form[key]
+
                 if name.strip():
-                    c.execute("INSERT INTO candidates(name) VALUES(?)", (name,))
+                    c.execute(
+                        "INSERT INTO candidates(name) VALUES(?)",
+                        (name,)
+                    )
 
         conn.commit()
         conn.close()
@@ -219,9 +226,13 @@ def admin_edit():
 
     c.execute("SELECT * FROM candidates")
     candidates = c.fetchall()
+
     conn.close()
 
-    return render_template('admin_edit.html', candidates=candidates)
+    return render_template(
+        'admin_edit.html',
+        candidates=candidates
+    )
 
 # ---------------- DELETE ---------------- #
 
@@ -234,7 +245,10 @@ def delete_candidate(candidate_id):
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
 
-    c.execute("DELETE FROM candidates WHERE id=?", (candidate_id,))
+    c.execute(
+        "DELETE FROM candidates WHERE id=?",
+        (candidate_id,)
+    )
 
     conn.commit()
     conn.close()
@@ -245,10 +259,17 @@ def delete_candidate(candidate_id):
 
 @app.route('/logout')
 def logout():
+
     session.clear()
+
     return redirect('/')
 
 # ---------------- RUN ---------------- #
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(
+        host='0.0.0.0',
+        port=5000,
+        debug=True
+    )
+```
